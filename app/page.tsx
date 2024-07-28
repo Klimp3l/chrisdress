@@ -1,113 +1,182 @@
-import Image from "next/image";
+import Image from 'next/image';
+import { dancing } from './fonts';
+
+import chroma from 'chroma-js';
 
 export default function Home() {
+  const classes = [
+    {
+      'class': 'Amarelo',
+      'colors': [
+        '#ffd500',
+        '#ffdc2e',
+        '#ffe761',
+        '#ffea76',
+        '#fff394'
+      ]
+    },
+    {
+      'class': 'Laranja',
+      'colors': [
+        '#dc6601',
+        '#e27602',
+        '#e88504',
+        '#ec9006',
+        '#ee9727'
+      ]
+    },
+    {
+      'class': 'Terracota',
+      'colors': [
+        '#883000',
+        '#793802',
+        '#944000',
+        '#813f0b',
+        '#bf5700'
+      ]
+    },
+    {
+      'class': 'Vermelho',
+      'colors': [
+        '#c30010',
+        '#d1001f',
+        '#de0a26',
+        '#f01e2c',
+        '#ff2c2c',
+        '#771713',
+        '#851a15',
+        '#9a1e18',
+        '#af231c',
+        '#dd372f'
+      ]
+    },
+    {
+      'class': 'Rosa',
+      'colors': [
+        '#bb437e',
+        '#d24787',
+        '#e44b8d',
+        '#e2619f',
+        '#e27bb1',
+        '#7e1037',
+        '#c14e76',
+        '#df7da6',
+        '#f7b2cf',
+        '#f99dbc'
+      ]
+    },
+    {
+      'class': 'Roxo',
+      'colors': [
+        '#6b1371',
+        '#913781',
+        '#a84296',
+        '#cd8ec0',
+        '#e1bbd9',
+        '#4b1c71',
+        '#7f4ca5',
+        '#b57edc',
+        '#dbb6ee',
+        '#dbbcdf'
+      ]
+    },
+    {
+      'class': 'Azul',
+      'colors': [
+        '#000080',
+        '#192586',
+        '#27379b',
+        '#384bb4',
+        '#3f54be',
+        '#1d2951',
+        '#003152',
+        '#588bae',
+        '#57a0d3',
+        '#79baec',
+        '#18848e',
+        '#1a98a6',
+        '#1dadc0',
+        '#1fbdd2',
+        '#33c7d8'
+      ]
+    },
+    {
+      'class': 'Verde',
+      'colors': [
+        '#20331b',
+        '#414833',
+        '#656d4a',
+        '#6d712e',
+        '#a2a569',
+        '#356258',
+        '#3a7267',
+        '#3f8276',
+        '#448f82',
+        '#509f94',
+        '#035718',
+        '#378552',
+        '#008631',
+        '#00ab41',
+        '#00c04b'
+      ]
+    },
+    {
+      'class': 'Marrom',
+      'colors': [
+        '#5b1f00',
+        '#66280a',
+        '#713112',
+        '#7c3b1a',
+        '#9a5833'
+      ]
+    }
+  ];
+
+  function orderColors(colors: string[]) {
+    return colors.sort((a, b) => {
+      // Converter as cores para valores de luminância
+      const luminanciaA = chroma(a).luminance();
+      const luminanciaB = chroma(b).luminance();
+  
+      // Comparar as luminâncias
+      return luminanciaA - luminanciaB;
+    });
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+      <main className="h-full w-full p-5">
+        <div className="flex flex-col rounded-lg m-auto max-w-96 bg-cloud-dancer text-green-950 shadow-[0px_0px_15px_10px_rgba(0,0,0,0.1)]">
+          <div className='flex items-center mt-2 justify-center w-full h-52 relative'>
+            <div className='absolute z-10 text-white cursive'>
+              <span className={`${dancing.className} text-5xl`}>Madrinhas</span>
+            </div>
+            <Image 
+              src='/fundo.jpg'
+              alt="fundo"
+              layout='fill'
+              className='w-full h-full'
             />
-          </a>
+          </div>
+          <div className='flex flex-col p-5 gap-5'>
+            {
+              classes.map((item) => (
+                <div key={item.class}>
+                  <span className={`${dancing.className} text-2xl text-[#535353]`}>{item.class}</span>
+                  <div className='grid grid-cols-5 gap-1'>
+                    {
+                      orderColors(item.colors).map((color) => (
+                        <div key={color} className='flex flex-col gap-1 items-center justify-center'> 
+                          <div style={{ backgroundColor: color }} className="w-10 h-10 rounded-full"/>
+                          <span className='text-xs'>{color}</span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              ))
+            }
+          </div>
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      </main>
   );
 }
