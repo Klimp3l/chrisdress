@@ -3,6 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -17,9 +18,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/app/_components/ui/select";
+import { upSertPicker } from "@/data/picker";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
+import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
+import { useToast } from "../ui/use-toast";
 
 interface Color {
     id: number;
@@ -31,12 +35,47 @@ interface Girl {
     name: string;
 }
 
-interface AlertItemProps {
-    color: Color | null;
+interface Picker {
+    girl: Girl;
+    color: Color;
 }
 
-const DialogColor = ({ color }: AlertItemProps) => {
+interface AlertItemProps {
+    color: Color ;
+    pickers: Picker[]
+}
+
+const DialogColor = ({ color, pickers }: AlertItemProps) => {
+    const router = useRouter();
+    const { toast } = useToast();
+
     const [girls, setGirls] = useState<Girl[] | null>([]);
+    const [girl, setGirl] = useState<Girl | null>();
+    const [open, setOpen] = useState(false);
+
+    const handleChangeGirl = (girl: string) => {
+        setGirl(JSON.parse(girl))
+        
+    }
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        let response;
+
+        if (girl) {
+            response = await upSertPicker({ 
+                girlId: girl.id,
+                colorId: color.id
+            })
+        }
+    
+        setOpen(false)
+        toast({
+            title: response?.message
+        })
+        router.push("/");
+    };
 
     useEffect(() => {
         const fetchGirls = async () => {
@@ -54,10 +93,14 @@ const DialogColor = ({ color }: AlertItemProps) => {
 
     return (
         <AlertDialogAction onClick={(e) => e.preventDefault()}>
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="w-full">Quero Esta!</Button>
-                </DialogTrigger>
+            <Dialog open={open}>
+                {
+                    pickers.length < 2 ? (
+                        <DialogTrigger asChild>
+                            <Button className="w-full" onClick={() => setOpen(true)}>Quero Esta!</Button>
+                        </DialogTrigger>
+                    ) : ''
+                }
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>Wait a minute! Who are you? 🧐🤔</DialogTitle>
@@ -65,20 +108,23 @@ const DialogColor = ({ color }: AlertItemProps) => {
                             Selecione o seu nome no campo abaixo, Obrigada!.
                         </DialogDescription>
                     </DialogHeader>
-                    <Select>
+                    <Select onValueChange={(girl) => handleChangeGirl(girl) }>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione seu nome" />
                         </SelectTrigger>
                         <SelectContent className="absolute max-h-44">
                             {
-                                girls?.map((girl) => (
-                                    <SelectItem key={girl.id} value={girl.name}>{girl.name}</SelectItem>
+                                girls?.filter(x => !pickers.find(y => y.girl.id == x.id))?.map((girl) => (
+                                    <SelectItem key={girl.id} value={JSON.stringify(girl)}>{girl.name}</SelectItem>
                                 ))
                             }
                         </SelectContent>
                     </Select>
                     <DialogFooter>
-                        <Button type="submit">Escolher</Button>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary" onClick={() => setOpen(false)}>Cancelar</Button>
+                        </DialogClose>
+                        <Button onClick={(e) => handleSubmit(e)} disabled={!girl}>Escolher</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

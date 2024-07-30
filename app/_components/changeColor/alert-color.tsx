@@ -12,6 +12,7 @@ import {
 import { Separator } from '@/app/_components/ui/separator';
 import DialogColor from "./dialog-color";
 import { getPickersByColorId } from "@/data/picker";
+import { Badge } from "../ui/badge";
 
 interface Color {
   id: number;
@@ -24,7 +25,6 @@ interface Girl {
 }
 
 interface Picker {
-  id: number;
   girl: Girl;
   color: Color;
 }
@@ -39,9 +39,16 @@ const AlertColor = async ({ color }: AlertItemProps) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <div className='flex flex-col gap-1 items-center justify-center'> 
-          <div style={{ backgroundColor: color.hex }} className="w-10 h-10 rounded-full"/>
-          <span className='text-xs'>{color.hex}</span>
+        <div className="relative pt-2">
+          {
+            pickers?.length ? (
+              <Badge variant="destructive" className="absolute right-0 top-0">{pickers?.length}</Badge>
+            ) : ''
+          }
+          <div className='flex flex-col gap-1 items-center justify-center'> 
+            <div style={{ backgroundColor: color.hex }} className="w-10 h-10 rounded-full"/>
+            <span className='text-xs'>{color.hex}</span>
+          </div>
         </div>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -63,7 +70,7 @@ const AlertColor = async ({ color }: AlertItemProps) => {
               <ul>
                 {
                   pickers?.map((picker, index) => (
-                    <li key={picker.id}>
+                    <li key={picker.girl.id}>
                       {picker.girl.name}
                     </li>
                   ))
@@ -74,7 +81,7 @@ const AlertColor = async ({ color }: AlertItemProps) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Escolher outra</AlertDialogCancel>
-          <DialogColor color={color}/>
+          <DialogColor color={color} pickers={pickers}/>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

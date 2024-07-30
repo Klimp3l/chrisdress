@@ -1,4 +1,5 @@
-import { getPickers, getPickersByColorId } from "@/data/picker"
+import { getPickers, getPickersByColorId, upSertPicker } from "@/data/picker"
+import { NextApiRequest } from "next";
 
 export const dynamic = 'force-dynamic' // defaults to auto
 
@@ -13,7 +14,6 @@ interface Girl {
 }
 
 interface Picker {
-    id: number;
     girl: Girl;
     color: Color;
 }

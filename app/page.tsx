@@ -1,13 +1,10 @@
-"use server"
-
 import Image from 'next/image';
 import { dancing } from './fonts';
-
-import { db } from '@/lib/db';
 
 import chroma from 'chroma-js';
 
 import AlertColor from './_components/changeColor/alert-color';
+import { getClasses } from '@/data/class';
 
 interface Color {
   id: number;
@@ -15,16 +12,7 @@ interface Color {
 }
 
 export default async function Home() {
-  const classes = await db.class.findMany({
-    include: {
-      colors: {
-        select: {
-          id: true,
-          hex: true,
-        }
-      }
-    }
-  });
+  const classes = await getClasses();
 
   function orderColors(colors: Color[]) { 
     return colors.sort((a, b) => {

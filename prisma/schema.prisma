@@ -32,10 +32,8 @@ model Color {
 }
 
 model Pickers {
-  id        Int      @id @default(autoincrement())
-
-  girldId   Int
-  girl      Girl     @relation(fields: [girldId], references: [id])
+  girlId    Int     @id @unique 
+  girl      Girl    @relation(fields: [girlId], references: [id])
 
   colorId   Int
   color     Color   @relation(fields: [colorId], references: [id])
