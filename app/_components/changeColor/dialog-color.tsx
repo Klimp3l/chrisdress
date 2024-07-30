@@ -70,10 +70,10 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
             })
         }
     
-        setOpen(false)
-        toast({
-            title: response?.message
-        })
+        if (response) {
+            setOpen(false)
+            toast(response)
+        }
         router.push("/");
     };
 

@@ -1,5 +1,6 @@
 'use server'
 import { db } from "@/lib/db";
+import { title } from "process";
 
 interface Color {
     id: number;
@@ -70,7 +71,7 @@ export const upSertPicker = async (data: upSertPicker) => {
         })
 
         if (picker.length == 2) {
-            return { message: "Esta cor já foi escolhida por outras duas Madrinhas!", ok: false }
+            return { title: "😥 Esta cor já foi escolhida por outras duas Madrinhas!", description: "Por favor escolha outra cor.", variant: "default" }
         } else {
             await db.pickers.upsert({
                 where: {
@@ -86,10 +87,10 @@ export const upSertPicker = async (data: upSertPicker) => {
                 }     
             })
             
-            return { message: "Cor escolhida!", ok: true }
+            return { title: "😁 Uhuuul, esta cor agora é sua cor do vestido!", description: "Se arrependeu? só ir e escolher outra 😉.", variant: "default" }
         }
     } catch (error) {
         console.log('@@@@', error)
-        return { message: "Erro", ok: false };
+        return { title: "Erro", description: error, variant: "destructive" };
     }
 }
