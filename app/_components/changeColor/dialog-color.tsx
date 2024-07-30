@@ -24,7 +24,6 @@ import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 import { useToast } from "@/app/_components/ui/use-toast";
-import { ToastProps } from "@radix-ui/react-toast";
 
 interface Color {
     id: number;

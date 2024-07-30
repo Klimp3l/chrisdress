@@ -1,15 +1,16 @@
 'use server'
 import { db } from "@/lib/db";
-import { title } from "process";
+import { revalidateTag } from "next/cache";
 
-interface Color {
-    id: number;
-    hex: string;
+interface upSertPicker {
+    girlId: number;
+    colorId: number;
 }
 
-interface Girl {
-    id: number;
-    name: string;
+interface Toast {
+    title: string;
+    description: string;
+    variant: "default" | "destructive" | null | undefined;
 }
 
 export const getPickers = async () => {
@@ -57,20 +58,11 @@ export const getPickersByColorId = async (colorId: number) => {
     }
 }
 
-interface upSertPicker {
-    girlId: number;
-    colorId: number;
-}
-
-interface Toast {
-    title: string;
-    description: string;
-    variant: "default" | "destructive" | null | undefined;
-}
-
 export const upSertPicker = async (data: upSertPicker) => {
     try {
         let response:Toast
+
+        revalidateTag("classes")
 
         const picker = await db.pickers.findMany({
             where: {

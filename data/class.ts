@@ -1,9 +1,9 @@
-"use server"
-
 import { db } from "@/lib/db";
 
-export const getClasses = async () => {
-    try {
+export const dynamic = 'force-dynamic'
+
+export async function getClasses() {
+  try {
         const classes = await db.class.findMany({
             include: {
               colors: {
