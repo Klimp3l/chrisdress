@@ -62,8 +62,16 @@ interface upSertPicker {
     colorId: number;
 }
 
+interface Toast {
+    title: string;
+    description: string;
+    variant: "default" | "destructive" | null | undefined;
+}
+
 export const upSertPicker = async (data: upSertPicker) => {
     try {
+        let response:Toast
+
         const picker = await db.pickers.findMany({
             where: {
                 colorId: data.colorId
@@ -71,7 +79,8 @@ export const upSertPicker = async (data: upSertPicker) => {
         })
 
         if (picker.length == 2) {
-            return { title: "😥 Esta cor já foi escolhida por outras duas Madrinhas!", description: "Por favor escolha outra cor.", variant: "default" }
+            response = { title: "😥 Esta cor já foi escolhida por outras duas Madrinhas!", description: "Por favor escolha outra cor.", variant: "default" }
+            return response
         } else {
             await db.pickers.upsert({
                 where: {
@@ -87,10 +96,12 @@ export const upSertPicker = async (data: upSertPicker) => {
                 }     
             })
             
-            return { title: "😁 Uhuuul, esta cor agora é sua cor do vestido!", description: "Se arrependeu? só ir e escolher outra 😉.", variant: "default" }
+            response = { title: "😁 Uhuuul, esta cor agora é sua cor do vestido!", description: "Se arrependeu? só ir e escolher outra 😉.", variant: "default" }
+            return response
         }
     } catch (error) {
         console.log('@@@@', error)
-        return { title: "Erro", description: error, variant: "destructive" };
+        const response:Toast ={ title: "Erro", description: "AVISA O BEEER!", variant: "destructive" }
+        return response;
     }
 }

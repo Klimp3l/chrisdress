@@ -23,7 +23,8 @@ import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
 import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/app/_components/ui/use-toast";
+import { ToastProps } from "@radix-ui/react-toast";
 
 interface Color {
     id: number;
@@ -61,19 +62,16 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        let response;
-
         if (girl) {
-            response = await upSertPicker({ 
+            const response = await upSertPicker({ 
                 girlId: girl.id,
                 colorId: color.id
             })
-        }
-    
-        if (response) {
-            setOpen(false)
+            
             toast(response)
         }
+    
+        setOpen(false)
         router.push("/");
     };
 
