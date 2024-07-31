@@ -1,5 +1,4 @@
-import { getPickers, getPickersByColorId, upSertPicker } from "@/data/picker"
-import { NextApiRequest } from "next";
+import { getPickers, upSertPicker } from "@/data/picker"
 
 export const dynamic = 'force-dynamic' // defaults to auto
 
@@ -19,18 +18,15 @@ interface Picker {
 }
 
 export async function GET(request: Request) {
-    const url = new URL(request.url)
-    const searchParams = url.searchParams
-
-    const colorId = searchParams.get('colorId') // Substitua 'paramName' pelo nome do seu parâmetro
-
-    let pickers: Picker[] | null = [];
-
-    if (colorId) {
-        pickers = await getPickersByColorId(parseInt(colorId))
-    } else {
-        pickers = await getPickers()
-    }
+    let pickers: Picker[] | [] = await getPickers()
 
     return Response.json(pickers)
+}
+
+export async function POST(request: Request) {
+    const data = await request.json()
+
+    const response = await upSertPicker(data)
+
+    return Response.json(response)
 }

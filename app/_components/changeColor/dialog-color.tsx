@@ -18,12 +18,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/app/_components/ui/select";
-import { upSertPicker } from "@/data/picker";
 import { AlertDialogAction } from "@radix-ui/react-alert-dialog";
-import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 import { useToast } from "@/app/_components/ui/use-toast";
+import { useSWRConfig } from "swr";
 
 interface Color {
     id: number;
@@ -42,11 +41,11 @@ interface Picker {
 
 interface AlertItemProps {
     color: Color ;
-    pickers: Picker[]
+    pickers: Picker[] | []
 }
 
 const DialogColor = ({ color, pickers }: AlertItemProps) => {
-    const router = useRouter();
+    const { mutate } = useSWRConfig()
     const { toast } = useToast();
 
     const [girls, setGirls] = useState<Girl[] | null>([]);
@@ -62,16 +61,23 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
         event.preventDefault();
 
         if (girl) {
-            const response = await upSertPicker({ 
-                girlId: girl.id,
-                colorId: color.id
-            })
+            const response = await 
+                fetch("/api/picker", {
+                    method: "POST",
+                    body: JSON.stringify({ 
+                        girlId: girl.id,
+                        colorId: color.id
+                    })
+                })
+                .then(
+                    res => res.json()
+                )
             
             toast(response)
         }
-    
+        
         setOpen(false)
-        router.push("/");
+        mutate("/api/picker");
     };
 
     useEffect(() => {
@@ -92,7 +98,7 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
         <AlertDialogAction onClick={(e) => e.preventDefault()}>
             <Dialog open={open}>
                 {
-                    pickers.length < 2 ? (
+                    pickers?.length < 2 ? (
                         <DialogTrigger asChild>
                             <Button className="w-full" onClick={() => setOpen(true)}>Quero Esta!</Button>
                         </DialogTrigger>
@@ -111,7 +117,7 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
                         </SelectTrigger>
                         <SelectContent className="absolute max-h-44">
                             {
-                                girls?.filter(x => !pickers.find(y => y.girl.id == x.id))?.map((girl) => (
+                                girls?.filter(x => !pickers?.find(y => y.girl.id == x.id))?.map((girl) => (
                                     <SelectItem key={girl.id} value={JSON.stringify(girl)}>{girl.name}</SelectItem>
                                 ))
                             }

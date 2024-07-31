@@ -1,3 +1,5 @@
+"use client"
+
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -10,8 +12,8 @@ import {
 } from "@/app/_components/ui/alert-dialog";
 import { Separator } from '@/app/_components/ui/separator';
 import DialogColor from "./dialog-color";
-import { getPickersByColorId } from "@/data/picker";
 import { Badge } from "../ui/badge";
+import useSWR from "swr";
 
 interface Color {
   id: number;
@@ -32,8 +34,12 @@ interface AlertItemProps {
   color: Color;
 }
 
-const AlertColor = async ({ color }: AlertItemProps) => {
-  const pickers: Picker[] = await getPickersByColorId(color.id);
+const fetcher = (url: string): Promise<Picker[] | []> => fetch(url).then(r => r.json())
+
+const AlertColor = ({ color }: AlertItemProps) => {
+  const { data } = useSWR("/api/picker", fetcher, { refreshInterval: 1000 })
+
+  const pickers: Picker[] | [] = data ? data.filter(x => x.color.id == color.id) : []
 
   return (
     <AlertDialog>

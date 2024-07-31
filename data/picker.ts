@@ -1,7 +1,6 @@
-'use server'
-import { db } from "@/lib/db";
-import { revalidateTag } from "next/cache";
+"use server"
 
+import { db } from "@/lib/db";
 interface upSertPicker {
     girlId: number;
     colorId: number;
@@ -34,35 +33,9 @@ export const getPickers = async () => {
     }
 }
 
-export const getPickersByColorId = async (colorId: number) => {
-    try {
-        const pickers = await db.pickers.findMany({
-            where: {
-                colorId: colorId
-            },
-            select: {
-                girl: true,
-                color: {
-                    select: {
-                        id: true,
-                        hex: true
-                    }
-                }
-            }
-        })
-
-        return pickers
-    } catch (error) {
-        console.log('@@@@', error)
-        return [];
-    }
-}
-
 export const upSertPicker = async (data: upSertPicker) => {
     try {
         let response:Toast
-
-        revalidateTag("classes")
 
         const picker = await db.pickers.findMany({
             where: {
@@ -72,7 +45,6 @@ export const upSertPicker = async (data: upSertPicker) => {
 
         if (picker.length == 2) {
             response = { title: "😥 Esta cor já foi escolhida por outras duas Madrinhas!", description: "Por favor escolha outra cor.", variant: "default" }
-            return response
         } else {
             await db.pickers.upsert({
                 where: {
@@ -89,8 +61,9 @@ export const upSertPicker = async (data: upSertPicker) => {
             })
             
             response = { title: "😁 Uhuuul, esta cor agora é sua cor do vestido!", description: "Se arrependeu? só ir e escolher outra 😉.", variant: "default" }
-            return response
         }
+
+        return response
     } catch (error) {
         console.log('@@@@', error)
         const response:Toast ={ title: "Erro", description: "AVISA O BEEER!", variant: "destructive" }
