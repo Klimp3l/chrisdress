@@ -51,16 +51,17 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
     const [girls, setGirls] = useState<Girl[] | null>([]);
     const [girl, setGirl] = useState<Girl | null>();
     const [open, setOpen] = useState(false);
+    const [isPeding, setIsPeding] = useState(false);
 
     const handleChangeGirl = (girl: string) => {
         setGirl(JSON.parse(girl))
-        
     }
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         if (girl) {
+            setIsPeding(true)
             const response = await 
                 fetch("/api/picker", {
                     method: "POST",
@@ -69,9 +70,8 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
                         colorId: color.id
                     })
                 })
-                .then(
-                    res => res.json()
-                )
+                .then(res => res.json())
+                .finally(() => setIsPeding(false))
             
             toast(response)
         }
@@ -127,7 +127,7 @@ const DialogColor = ({ color, pickers }: AlertItemProps) => {
                         <DialogClose asChild>
                             <Button type="button" variant="secondary" onClick={() => setOpen(false)}>Cancelar</Button>
                         </DialogClose>
-                        <Button onClick={(e) => handleSubmit(e)} disabled={!girl}>Escolher</Button>
+                        <Button onClick={(e) => handleSubmit(e)} disabled={!girl || isPeding}>Escolher</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
